@@ -2,8 +2,5 @@ package main
 
 values: {
 	// Placeholder for user-supplied values
-    metadata: {
-        name: "exmaple"
-        namespace: "default"
-    }
+	metadata: name: "example" // Lowercase to show overriding the default
 }

@@ -2,14 +2,13 @@ package main
 
 import (
 	d "timoni.sh/templates/classes/deployments"
-	// s "timoni.sh/templates/service"
+	i "timoni.sh/templates/inputs"
 )
 
 // Define the schema for the user-supplied values.
 // At runtime, Timoni injects the supplied values
 // and validates them according to the Config schema.
-values: d.#Config
-
+values: i.#Config
 
 // Define how Timoni should build, validate and
 // apply the Kubernetes resources.
@@ -25,9 +24,11 @@ timoni: {
 		config: values
 		// The instance name and namespace tag values
 		// are injected at runtime by Timoni.
-		config: metadata: {
-			name:      string @tag(name)
-			namespace: string @tag(namespace)
+		config: {
+			metadata: {
+				name:      string @tag(name)
+				namespace: string @tag(namespace)
+			}
 		}
 	}
 
