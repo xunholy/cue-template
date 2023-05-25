@@ -25,7 +25,7 @@ timoni: {
 		// are injected at runtime by Timoni.
 		config: {
 			metadata: {
-				name: string @tag(name)
+				name:      string @tag(name)
 				namespace: string @tag(namespace)
 			}
 		}

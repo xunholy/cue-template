@@ -9,8 +9,8 @@ import (
 
 	apiVersion: "v1"
 	kind:       "ConfigMap"
-	metadata: _config.metadata
+	metadata:   _config.metadata
 
 	immutable: _config.configmap.immutable
-	data: _config.configmap.data
+	data:      _config.configmap.data
 }
