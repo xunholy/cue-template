@@ -9,7 +9,7 @@ import (
 
 	apiVersion: "v1"
 	kind:       "Service"
-	metadata: _config.metadata
+	metadata:   _config.metadata
 
 	spec: {
 		ports: _config.service.ports

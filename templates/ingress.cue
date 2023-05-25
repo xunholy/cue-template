@@ -9,7 +9,7 @@ import (
 
 	apiVersion: "v1"
 	kind:       "Ingress"
-	metadata: _config.metadata
+	metadata:   _config.metadata
 
 	spec: {}
 }

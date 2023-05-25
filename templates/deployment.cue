@@ -9,20 +9,20 @@ import (
 
 	apiVersion: "apps/v1"
 	kind:       "Deployment"
-	metadata: _config.metadata
+	metadata:   _config.metadata
 
 	// https://pkg.go.dev/k8s.io/api/apps/v1#DeploymentSpec
 	spec: appsv1.#DeploymentSpec & {
 		replicas: _config.controller.replicas
 		strategy: {
-			type: _config.controller.strategy
+			type:          _config.controller.strategy
 			rollingUpdate: _config.controller.rollingUpdate | {...}
 		}
 		selector: matchLabels: _config.metadata.labels
 		template: {
 			metadata: {
 				annotations: _config.metadata.annotations
-				labels: _config.controller.labels
+				labels:      _config.controller.labels
 			}
 			#PodTemplateSpec
 		}
