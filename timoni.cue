@@ -1,8 +1,6 @@
 package main
 
-import (
-	templates "timoni.sh/templates/templates"
-)
+import templates "github.com/xunholy/cue-template/templates"
 
 // Define the schema for the user-supplied values.
 // At runtime, Timoni injects the supplied values

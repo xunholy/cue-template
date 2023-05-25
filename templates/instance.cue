@@ -1,24 +1,24 @@
 package templates
 
+import "strings"
+
 #Instance: {
 	config: #Config
 
+	let _templates = [#ConfigMapTemplate, #DaemonSetTemplate, #DeploymentTemplate, #IngressTemplate, #ServiceTemplate, #StatefulSetTemplate]
+
 	objects: {
-		if config.controller.enabled {
-			if config.controller.type == "deployment" {
-				"\(config.metadata.name)-deployment": #Deployment & {_config: config}
+		for template in _templates {
+			// https://github.com/cue-lang/cue/issues/2420
+			let _config = config
+
+			let object = template & {config: _config}
+
+			if object.template != _|_ {
+				let name = object.template.metadata.name
+				let kind = strings.ToLower(object.template.kind)
+				"\(name)-\(kind)": object.template
 			}
-			if config.controller.type == "daemonset" {
-				"\(config.metadata.name)-daemonset": #DaemonSet & {_config: config}
-			}
-			if config.controller.type == "statefulset" {
-				"\(config.metadata.name)-statefulset": #StatefulSet & {_config: config}
-			}
-		}
-		"\(config.metadata.name)-configmap": #ConfigMap & {_config: config}
-		"\(config.metadata.name)-service":   #Service & {_config:   config}
-		if config.ingress.enabled {
-			"\(config.metadata.name)-ingress": #Ingress & {_config: config}
 		}
 	}
 }

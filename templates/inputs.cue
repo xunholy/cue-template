@@ -3,59 +3,83 @@ package templates
 import (
 	"strings"
 
-	corev1 "k8s.io/api/core/v1"
+	appsv1 "k8s.io/api/apps/v1"
+	"k8s.io/api/core/v1"
+	// networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // Config defines the schema and defaults for the Instance values.
 #Config: {
-	metadata:  #MetadataConfig
-	pod:       #PodConfig
-	configmap: #ConfigMapConfig
-	service:   #ServiceConfig
-	ingress:   #IngressConfig
-
-	// Setting the default controller type to use deployments else use statefulset
-	controller: #ControllerConfig
+	controller: #DaemonSetConfig | *#DeploymentConfig | #StatefulSetConfig
+	metadata:   #MetadataConfig
+	pod:        #PodConfig
+	configmap:  #ConfigMapConfig
+	service:    #ServiceConfig
+	ingress:    #IngressConfig
 }
 
-#ControllerConfig: {
-	enabled: *true | bool
-	type:    *"deployment" | "statefulset" | "daemonset"
-	annotations: [string]: string
-	labels: [string]: string
-	replicas:      *1 | int
-	restartPolicy: *"Always" | corev1.#RestartPolicy
-	// TODO: Should set strategy type options here or simplify this and rely on type validation
-	// EG.
-	// strategy: *"RollingUpdate" | "Recreate" | "OnDelete"
-	if type == "deployment" {
-		strategy: *"RollingUpdate" | "Recreate"
+_#ControllerConfig: {
+	enabled:       bool | *true
+	annotations:   ({[string]: string}) | *null
+	labels:        ({[string]: string}) | *null
+	restartPolicy: v1.#RestartPolicy | *v1.#RestartPolicyAlways
+}
+
+#DaemonSetConfig: {
+	_#ControllerConfig
+
+	// https://github.com/cue-lang/cue/issues/2421
+	daemonset: true
+
+	strategy: appsv1.#DaemonSetUpdateStrategy | *appsv1.#RollingUpdateDaemonSetStrategyType
+}
+
+#DeploymentConfig: {
+	_#ControllerConfig
+
+	// https://github.com/cue-lang/cue/issues/2421
+	deployment: true
+
+	replicas: int | *1
+	strategy: appsv1.#DeploymentStrategy | *appsv1.#RollingUpdateDeploymentStrategyType
+	if strategy == appsv1.#RollingUpdateDeploymentStrategyType {
+		rollingUpdate: appsv1.#RollingUpdateDeployment | *null
 	}
-	if type == "statefulset" {
-		strategy: *"RollingUpdate" | "OnDelete"
+}
+
+#StatefulSetConfig: {
+	_#ControllerConfig
+
+	// https://github.com/cue-lang/cue/issues/2421
+	statefulset: true
+
+	replicas: int | *1
+	strategy: appsv1.#StatefulSetUpdateStrategy | *appsv1.#RollingUpdateStatefulSetStrategyType
+	if strategy == appsv1.#RollingUpdateDeploymentStrategyType {
+		rollingUpdate: appsv1.#RollingUpdateStatefulSetStrategy | *null
 	}
 }
 
 #IngressConfig: {
-	ingressClassName: *null | string
-	enabled:          *true | bool
+	enabled:          bool | *true
+	ingressClassName: string | *null
 }
 
 #ConfigMapConfig: {
-	immutable: *false | bool
-	data: {...}
+	immutable: bool | *false
+	data:      ({[string]: string}) | *null
 }
 
 #ServiceConfig: {
-	// TODO: How does this get overriden
-	ports: [...#Port]
+	// TODO: How does this get overridden
+	ports: [...v1.#ServicePort] | *null
 	// selector: [...]
 	// clusterIP: string
 	// clusterIPs: [...]
-	type: *"ClusterIP" | "NodePort" | "LoadBalancer" | "ExternalName"
+	type: v1.#ServiceType | *v1.#ServiceTypeClusterIP
 	// externalIPs: [...]
-	sessionAffinity: *"None" | "ClientIP"
+	sessionAffinity: v1.#ServiceAffinity | *v1.#ServiceAffinityNone
 	// loadBalancerIP: [...]
 	// loadBalancerSourceRanges: [...]
 	// externalName: [...]
@@ -67,43 +91,34 @@ import (
 	// internalTrafficPolicy:[...]
 }
 
-#Port: {
-	port:       *80 | int & >0 & <=65535
-	targetPort: *port | int & >0 & <=65535
-	name:       *"main" | string
-	protocol:   *"TCP" | "UDP" | "SCTP"
-}
-
 #MetadataConfig: metav1.#ObjectMeta & {
-	name:        *"example" | string & =~"^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$" & strings.MaxRunes(63)
-	namespace:   *"default" | string & strings.MaxRunes(63)
-	labels:      *null | {[string]: string}
-	annotations: *null | {[string]: string}
+	name:      *"example" | string & =~"^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$" & strings.MaxRunes(63)
+	namespace: *"default" | string & strings.MaxRunes(63)
 }
 
 #PodConfig: {
 	imagePullSecrets?: [...]
-	serviceAccountName:             *"default" | string
-	automountServiceAccountToken:   *true | bool
-	podSecurityContext:             corev1.#PodSecurityContext
+	serviceAccountName?:            *"default" | string
+	automountServiceAccountToken?:  *true | bool
+	podSecurityContext?:            v1.#PodSecurityContext
 	priorityClassName?:             string
 	runtimeClassName?:              string
 	schedulerName?:                 string
-	hostIPC:                        *false | bool
-	hostNetwork:                    *false | bool
-	hostPID:                        *false | bool
+	hostIPC?:                       *false | bool
+	hostNetwork?:                   *false | bool
+	hostPID?:                       *false | bool
 	hostname?:                      string
-	dnsPolicy:                      *"ClusterFirst" | string
-	dnsConfig:                      corev1.#PodDNSConfig
-	enableServiceLinks:             *true | bool
+	dnsPolicy?:                     string | *v1.#DNSClusterFirst
+	dnsConfig?:                     v1.#PodDNSConfig
+	enableServiceLinks?:            *true | bool
 	terminationGracePeriodSeconds?: int & >0
-	initContainers: [...]
-	containers: [...]
-	volumes: [...]
-	hostAliases: [...]
-	nodeSelector: {...}
-	affinity: corev1.#Affinity
-	topologySpreadConstraints: [...]
-	tolerations: [...]
-	restartPolicy: *"Always" | corev1.#RestartPolicy
+	initContainers?: [...]
+	containers?: [...]
+	volumes?: [...]
+	hostAliases?: [...]
+	nodeSelector?: {...}
+	affinity?: v1.#Affinity
+	topologySpreadConstraints?: [...]
+	tolerations:    [...v1.#Toleration] | *null
+	restartPolicy?: *"Always" | v1.#RestartPolicy
 }
