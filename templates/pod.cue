@@ -1,12 +1,12 @@
-package pods
+package templates
 
 import (
 	corev1 "k8s.io/api/core/v1"
-	i "timoni.sh/templates/inputs"
 )
 
 #PodTemplateSpec: corev1.#Pod & {
-	_config: i.#Config
+	_config: #Config
+
 	spec: {
 		imagePullSecrets?: _config.pod.imagePullSecrets
 		serviceAccountName: _config.pod.serviceAccountName

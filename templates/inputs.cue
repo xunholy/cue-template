@@ -1,6 +1,8 @@
-package inputs
+package templates
 
 import (
+	"strings"
+
   corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -89,16 +91,16 @@ import (
 
 #Port: {
 	port: *80        | int & >0 & <=65535
-	targetPort: *80  | int & >0 & <=65535
+	targetPort: *port | int & >0 & <=65535
 	name: *"main"    | string
 	protocol: *"TCP" | "UDP" | "SCTP"
 }
 
 #MetadataConfig: metav1.#ObjectMeta & {
-    name:      *"example" | string
-    namespace: *"default" | string
-		labels: {...}
-		annotations: {...}
+    name:      *"example" | string & =~"^(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])?$" & strings.MaxRunes(63)
+    namespace: *"default" | string & strings.MaxRunes(63)
+		labels: *null | {[string]: string}
+		annotations: *null | {[string]: string}
 }
 
 #PodConfig: {
@@ -126,4 +128,26 @@ import (
 	topologySpreadConstraints: [...]
 	tolerations: [...]
 	restartPolicy: *"Always" | corev1.#RestartPolicy
+}
+
+#Instance: {
+	config: #Config
+
+	objects: {
+    // if config.controller == "deployment" {
+		// 	"\(config.metadata.name)-deployment": deployments.#Deployment & {_config: config}
+		// }
+    // if config.controller == "daemonset" {
+    //   "\(config.metadata.name)-daemonset": daemonsets.#DaemonSet & {_config: config}
+    // }
+    // if config.controller == "statefulset" {
+    //   "\(config.metadata.name)-statefulset": statefulsets.#StatefulSet & {_config: config}
+    // }
+		"\(config.metadata.name)-configmap": #ConfigMap & {_config: config}
+    // "\(config.metadata.name)-service": services.#Service & {_config: config}
+    // if config.ingress.enabled {
+    //   "\(config.metadata.name)-ingress": ingresses.#Ingress & {_config: config}
+    // }
+
+	}
 }

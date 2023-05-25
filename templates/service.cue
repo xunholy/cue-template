@@ -1,20 +1,18 @@
-package services
+package templates
 
 import (
-	// appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	i "timoni.sh/templates/inputs"
-	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 #Service: corev1.#Service & {
-	_config: i.#Config
+	_config: #Config
 
 	apiVersion: "v1"
 	kind:       "Service"
 	metadata: _config.metadata
+
 	spec: {
-		ports: [..._config.service.ports]
+		ports: _config.service.ports
 		// selector: matchLabels: _config.metadata.labels
 		// clusterIP: _config.service.clusterIP
 		// clusterIPs: _config.service.clusterIPs

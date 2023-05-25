@@ -1,15 +1,11 @@
-package statefulsets
+package templates
 
 import (
 	appsv1 "k8s.io/api/apps/v1"
-	// corev1 "k8s.io/api/core/v1"
-	p "timoni.sh/templates/controllers/pods"
-	i "timoni.sh/templates/inputs"
-	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 #StatefulSet : appsv1.#StatefulSet  & {
-	_config: i.#Config
+	_config: #Config
 
 	apiVersion: "apps/v1"
 	kind:       "DaemonSet"
@@ -23,7 +19,7 @@ import (
 				annotations: _config.metadata.annotations
 				labels: _config.deployment.podLabels
 			}
-			p.#PodTemplateSpec
+			#PodTemplateSpec
 		}
 	}
 }

@@ -1,14 +1,13 @@
 package main
 
 import (
-	instances "timoni.sh/templates/instances"
-	i "timoni.sh/templates/inputs"
+	templates "timoni.sh/templates/templates"
 )
 
 // Define the schema for the user-supplied values.
 // At runtime, Timoni injects the supplied values
 // and validates them according to the Config schema.
-values: i.#Config
+values: templates.#Config
 
 // Define how Timoni should build, validate and
 // apply the Kubernetes resources.
@@ -18,7 +17,7 @@ timoni: {
 	// Define the instance that outputs the Kubernetes resources.
 	// At runtime, Timoni builds the instance and validates
 	// the resulting resources according to their Kubernetes schema.
-	instance: instances.#Instance & {
+	instance: templates.#Instance & {
 		// The user-supplied values are merged with the
 		// default values at runtime by Timoni.
 		config: values
