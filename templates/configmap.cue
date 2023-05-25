@@ -1,16 +1,14 @@
 package templates
 
-import (
-	corev1 "k8s.io/api/core/v1"
-)
+import "k8s.io/api/core/v1"
 
-#ConfigMap: corev1.#ConfigMap & {
-	_config: #Config
-
-	apiVersion: "v1"
-	kind:       "ConfigMap"
-	metadata:   _config.metadata
-
-	immutable: _config.configmap.immutable
-	data:      _config.configmap.data
+#ConfigMapTemplate: {
+	config:   #Config
+	template: v1.#ConfigMap & {
+		apiVersion: "v1"
+		kind:       "ConfigMap"
+		metadata:   config.metadata
+		immutable:  config.configmap.immutable
+		data:       config.configmap.data
+	}
 }

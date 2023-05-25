@@ -1,26 +1,25 @@
 package templates
 
-import (
-	appsv1 "k8s.io/api/apps/v1"
-)
+import appsv1 "k8s.io/api/apps/v1"
 
-#StatefulSet: appsv1.#StatefulSet & {
-	_config: #Config
+#StatefulSetTemplate: {
+	config: #Config
+	let _controller = config.controller
+	if (_controller & #StatefulSetConfig) != _|_ && config.controller.enabled {
+		template: appsv1.#StatefulSet & {
+			apiVersion: "apps/v1"
+			kind:       "StatefulSet"
+			metadata:   config.metadata
+			spec: {
+				replicas: config.controller.replicas
+				selector: matchLabels: config.controller.labels
 
-	apiVersion: "apps/v1"
-	kind:       "StatefulSet"
-	metadata:   _config.metadata
+				let pod = #PodTemplate & {config: config}
+				template: pod.template
 
-	spec: {
-		replicas: _config.controller.replicas
-		selector: matchLabels: _config.metadata.labels
-		template: {
-			metadata: {
-				annotations: _config.metadata.annotations
-				labels:      _config.controller.labels
+				serviceName: config.metadata.name
+				updateStrategy: type: config.controller.strategy
 			}
-			#PodTemplateSpec
 		}
-		updateStrategy: type: _config.controller.strategy
 	}
 }

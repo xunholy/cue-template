@@ -1,30 +1,25 @@
 package templates
 
-import (
-	appsv1 "k8s.io/api/apps/v1"
-)
+import appsv1 "k8s.io/api/apps/v1"
 
-#Deployment: appsv1.#Deployment & {
-	_config: #Config
+#DeploymentTemplate: {
+	config: #Config
+	if (config.controller & #DeploymentConfig) != _|_ && config.controller.enabled {
+		template: appsv1.#Deployment & {
+			apiVersion: "apps/v1"
+			kind:       "Deployment"
+			metadata:   config.metadata
+			spec: {
+				replicas: config.controller.replicas
+				strategy: {
+					type:          config.controller.strategy
+					rollingUpdate: config.controller.rollingUpdate
+				}
+				selector: matchLabels: config.controller.labels
 
-	apiVersion: "apps/v1"
-	kind:       "Deployment"
-	metadata:   _config.metadata
-
-	// https://pkg.go.dev/k8s.io/api/apps/v1#DeploymentSpec
-	spec: appsv1.#DeploymentSpec & {
-		replicas: _config.controller.replicas
-		strategy: {
-			type:          _config.controller.strategy
-			rollingUpdate: _config.controller.rollingUpdate | {...}
-		}
-		selector: matchLabels: _config.metadata.labels
-		template: {
-			metadata: {
-				annotations: _config.metadata.annotations
-				labels:      _config.controller.labels
+				let pod = #PodTemplate & {config: config}
+				template: pod.template
 			}
-			#PodTemplateSpec
 		}
 	}
 }

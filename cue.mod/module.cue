@@ -1,1 +1,1 @@
-module: "timoni.sh/templates"
+module: "github.com/xunholy/cue-template"

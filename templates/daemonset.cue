@@ -1,25 +1,20 @@
 package templates
 
-import (
-	appsv1 "k8s.io/api/apps/v1"
-)
+import appsv1 "k8s.io/api/apps/v1"
 
-#DaemonSet: appsv1.#DaemonSet & {
-	_config: #Config
+#DaemonSetTemplate: {
+	config: #Config
+	if (config.controller & #DaemonSetConfig) != _|_ && config.controller.enabled {
+		template: appsv1.#DaemonSet & {
+			apiVersion: "apps/v1"
+			kind:       "DaemonSet"
+			metadata:   config.metadata
+			spec: {
+				selector: matchLabels: config.controller.labels
 
-	apiVersion: "apps/v1"
-	kind:       "DaemonSet"
-	metadata:   _config.metadata
-
-	// https://pkg.go.dev/k8s.io/api/apps/v1#DaemonSetSpec
-	spec: appsv1.#DaemonSetSpec & {
-		selector: matchLabels: _config.metadata.labels
-		template: {
-			metadata: {
-				annotations: _config.metadata.annotations
-				labels:      _config.controller.labels
+				let pod = #PodTemplate & {config: config}
+				template: pod.template
 			}
-			#PodTemplateSpec
 		}
 	}
 }
