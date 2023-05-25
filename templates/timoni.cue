@@ -1,7 +1,7 @@
 package main
 
 import (
-	d "timoni.sh/templates/classes/deployments"
+	instances "timoni.sh/templates/instances"
 	i "timoni.sh/templates/inputs"
 )
 
@@ -18,7 +18,7 @@ timoni: {
 	// Define the instance that outputs the Kubernetes resources.
 	// At runtime, Timoni builds the instance and validates
 	// the resulting resources according to their Kubernetes schema.
-	instance: d.#Instance & {
+	instance: instances.#Instance & {
 		// The user-supplied values are merged with the
 		// default values at runtime by Timoni.
 		config: values
@@ -26,7 +26,7 @@ timoni: {
 		// are injected at runtime by Timoni.
 		config: {
 			metadata: {
-				name:      string @tag(name)
+				name: string @tag(name)
 				namespace: string @tag(namespace)
 			}
 		}

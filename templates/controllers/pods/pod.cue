@@ -5,7 +5,6 @@ import (
 	i "timoni.sh/templates/inputs"
 )
 
-
 #PodTemplateSpec: corev1.#Pod & {
 	_config: i.#Config
 	spec: {

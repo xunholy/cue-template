@@ -3,14 +3,56 @@ package inputs
 import (
   corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	// corev1 "k8s.io/api/core/v1"
 )
 
 // Config defines the schema and defaults for the Instance values.
 #Config: {
   metadata: #MetadataConfig
   deployment: #DeploymentConfig
+	statefulset: #StatefulSetConfig
+	daemonset: #DaemonSetConfig
   pod: #PodConfig
+	configmap: #ConfigMapConfig
+	service: #ServiceConfig
+	ingress: #IngressConfig
+
+	// Setting the default controller type to use deployments else use statefulset
+	controller: *"deployment" | "statefulset" | "daemonset"
+}
+
+#IngressConfig: {
+	ingressClassName: *null | string
+	enabled: *true | bool
+
+}
+
+#ConfigMapConfig: {
+	immutable: *false | bool
+	data: {...}
+}
+
+#StatefulSetConfig: {
+  podLabels: {...}
+  controller: {
+    replicas: *1 | int
+    strategy: "RollingUpdate"
+    rollingUpdate?: {
+      unavailable?: string
+      surge?: string
+    }
+  }
+}
+
+#DaemonSetConfig: {
+  podLabels: {...}
+  controller: {
+    replicas: *1 | int
+    strategy: "RollingUpdate"
+    rollingUpdate?: {
+      unavailable?: string
+      surge?: string
+    }
+  }
 }
 
 #DeploymentConfig: {
@@ -25,8 +67,35 @@ import (
   }
 }
 
+#ServiceConfig: {
+	// TODO: How does this get overriden
+	ports: [...#Port]
+	// selector: [...]
+	// clusterIP: string
+	// clusterIPs: [...]
+	type: *"ClusterIP" | "NodePort" | "LoadBalancer" | "ExternalName"
+	// externalIPs: [...]
+	sessionAffinity: *"None" | "ClientIP"
+	// loadBalancerIP: [...]
+	// loadBalancerSourceRanges: [...]
+	// externalName: [...]
+	// externalTrafficPolicy: [...]
+	// ipFamilies: [...]
+	// ipFamilyPolicy: [...]
+	// allocateLoadBalancerNodePorts: [...]
+	// loadBalancerClass: [...]
+	// internalTrafficPolicy:[...]
+}
+
+#Port: {
+	port: *80        | int & >0 & <=65535
+	targetPort: *80  | int & >0 & <=65535
+	name: *"main"    | string
+	protocol: *"TCP" | "UDP" | "SCTP"
+}
+
 #MetadataConfig: metav1.#ObjectMeta & {
-    name:      *"EXAMPLE" | string
+    name:      *"example" | string
     namespace: *"default" | string
 		labels: {...}
 		annotations: {...}

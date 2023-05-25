@@ -1,4 +1,4 @@
-package deployments
+package daemonsets
 
 import (
 	appsv1 "k8s.io/api/apps/v1"
@@ -8,18 +8,15 @@ import (
 	// metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-#Deployment: appsv1.#Deployment & {
+#DaemonSet : appsv1.#DaemonSet  & {
 	_config: i.#Config
+
 	apiVersion: "apps/v1"
-	kind:       "Deployment"
+	kind:       "DaemonSet"
 	metadata: _config.metadata
-	// https://pkg.go.dev/k8s.io/api/apps/v1#DeploymentSpec
-	spec: appsv1.#DeploymentSpec & {
-		replicas: _config.deployment.controller.replicas
-		strategy: {
-			type: _config.deployment.controller.strategy
-			rollingUpdate: _config.controller.rollingUpdate | {...}
-		}
+
+	// https://pkg.go.dev/k8s.io/api/apps/v1#DaemonSetSpec
+	spec: appsv1.#DaemonSetSpec & {
 		selector: matchLabels: _config.metadata.labels
 		template: {
 			metadata: {
