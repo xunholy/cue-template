@@ -10,19 +10,16 @@ import (
 // Config defines the schema and defaults for the Instance values.
 #Config: {
   metadata: #MetadataConfig
-  deployment: #DeploymentConfig
-	statefulset: #StatefulSetConfig
-	daemonset: #DaemonSetConfig
   pod: #PodConfig
 	configmap: #ConfigMapConfig
 	service: #ServiceConfig
 	ingress: #IngressConfig
 
 	// Setting the default controller type to use deployments else use statefulset
-	controller: #ControllerConmfig
+	controller: #ControllerConfig
 }
 
-#ControllerConmfig: {
+#ControllerConfig: {
 	enabled: *true | bool
 	type: *"deployment" | "statefulset" | "daemonset"
 	annotations: {[string]: string}
@@ -49,40 +46,6 @@ import (
 #ConfigMapConfig: {
 	immutable: *false | bool
 	data: {...}
-}
-
-#StatefulSetConfig: {
-  podLabels: {...}
-  controller: {
-    replicas: *1 | int
-    strategy: "RollingUpdate"
-    rollingUpdate?: {
-      unavailable?: string
-      surge?: string
-    }
-  }
-}
-
-#DaemonSetConfig: {
-  podLabels: {...}
-  controller: {
-    strategy: "RollingUpdate"
-    rollingUpdate?: {
-      unavailable?: string
-      surge?: string
-    }
-  }
-}
-
-#DeploymentConfig: {
-  podLabels: {...}
-  controller: {
-    strategy: "RollingUpdate"
-    rollingUpdate?: {
-      unavailable?: string
-      surge?: string
-    }
-  }
 }
 
 #ServiceConfig: {

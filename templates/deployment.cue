@@ -15,14 +15,14 @@ import (
 	spec: appsv1.#DeploymentSpec & {
 		replicas: _config.controller.replicas
 		strategy: {
-			type: _config.deployment.controller.strategy
+			type: _config.controller.strategy
 			rollingUpdate: _config.controller.rollingUpdate | {...}
 		}
 		selector: matchLabels: _config.metadata.labels
 		template: {
 			metadata: {
 				annotations: _config.metadata.annotations
-				labels: _config.deployment.podLabels
+				labels: _config.controller.labels
 			}
 			#PodTemplateSpec
 		}

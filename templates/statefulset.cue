@@ -17,7 +17,7 @@ import (
 		template: {
 			metadata: {
 				annotations: _config.metadata.annotations
-				labels: _config.deployment.podLabels
+				labels: _config.controller.labels
 			}
 			#PodTemplateSpec
 		}
