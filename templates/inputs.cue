@@ -19,7 +19,25 @@ import (
 	ingress: #IngressConfig
 
 	// Setting the default controller type to use deployments else use statefulset
-	controller: *"deployment" | "statefulset" | "daemonset"
+	controller: #ControllerConmfig
+}
+
+#ControllerConmfig: {
+	enabled: *true | bool
+	type: *"deployment" | "statefulset" | "daemonset"
+	annotations: {[string]: string}
+	labels: {[string]: string}
+	replicas: *1 | int
+	restartPolicy: *"Always" | corev1.#RestartPolicy
+	// TODO: Should set strategy type options here or simplify this and rely on type validation
+	// EG.
+	// strategy: *"RollingUpdate" | "Recreate" | "OnDelete"
+	if type == "deployment" {
+		strategy: *"RollingUpdate" | "Recreate"
+	}
+	if type == "statefulset" {
+		strategy: *"RollingUpdate" | "OnDelete"
+	}
 }
 
 #IngressConfig: {
@@ -48,7 +66,6 @@ import (
 #DaemonSetConfig: {
   podLabels: {...}
   controller: {
-    replicas: *1 | int
     strategy: "RollingUpdate"
     rollingUpdate?: {
       unavailable?: string
@@ -60,7 +77,6 @@ import (
 #DeploymentConfig: {
   podLabels: {...}
   controller: {
-    replicas: *1 | int
     strategy: "RollingUpdate"
     rollingUpdate?: {
       unavailable?: string
@@ -128,26 +144,4 @@ import (
 	topologySpreadConstraints: [...]
 	tolerations: [...]
 	restartPolicy: *"Always" | corev1.#RestartPolicy
-}
-
-#Instance: {
-	config: #Config
-
-	objects: {
-    // if config.controller == "deployment" {
-		// 	"\(config.metadata.name)-deployment": deployments.#Deployment & {_config: config}
-		// }
-    // if config.controller == "daemonset" {
-    //   "\(config.metadata.name)-daemonset": daemonsets.#DaemonSet & {_config: config}
-    // }
-    // if config.controller == "statefulset" {
-    //   "\(config.metadata.name)-statefulset": statefulsets.#StatefulSet & {_config: config}
-    // }
-		"\(config.metadata.name)-configmap": #ConfigMap & {_config: config}
-    // "\(config.metadata.name)-service": services.#Service & {_config: config}
-    // if config.ingress.enabled {
-    //   "\(config.metadata.name)-ingress": ingresses.#Ingress & {_config: config}
-    // }
-
-	}
 }

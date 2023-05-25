@@ -8,11 +8,11 @@ import (
 	_config: #Config
 
 	apiVersion: "apps/v1"
-	kind:       "DaemonSet"
+	kind:       "StatefulSet"
 	metadata: _config.metadata
 
-	// https://pkg.go.dev/k8s.io/api/apps/v1#DaemonSetSpec
-	spec: appsv1.#StatefulSetSpec & {
+	spec: {
+		replicas: _config.controller.replicas
 		selector: matchLabels: _config.metadata.labels
 		template: {
 			metadata: {
@@ -20,6 +20,9 @@ import (
 				labels: _config.deployment.podLabels
 			}
 			#PodTemplateSpec
+		}
+		updateStrategy: {
+			type: _config.controller.strategy
 		}
 	}
 }

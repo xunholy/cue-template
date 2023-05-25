@@ -13,7 +13,7 @@ import (
 
 	// https://pkg.go.dev/k8s.io/api/apps/v1#DeploymentSpec
 	spec: appsv1.#DeploymentSpec & {
-		replicas: _config.deployment.controller.replicas
+		replicas: _config.controller.replicas
 		strategy: {
 			type: _config.deployment.controller.strategy
 			rollingUpdate: _config.controller.rollingUpdate | {...}
