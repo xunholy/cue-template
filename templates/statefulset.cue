@@ -9,7 +9,9 @@ import appsv1 "k8s.io/api/apps/v1"
 		template: appsv1.#StatefulSet & {
 			apiVersion: "apps/v1"
 			kind:       "StatefulSet"
-			metadata:   config.metadata
+			metadata: config.metadata
+			metadata: annotations: config.controller.annotations
+			metadata: labels: config.controller.labels
 			spec: {
 				replicas: config.controller.replicas
 				selector: matchLabels: config.controller.labels

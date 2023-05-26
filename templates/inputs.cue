@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	appsv1 "k8s.io/api/apps/v1"
-	"k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	// networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -17,13 +17,20 @@ import (
 	configmap:  #ConfigMapConfig
 	service:    #ServiceConfig
 	ingress:    #IngressConfig
+	image: 			#ImageConfig
+}
+
+#ImageConfig: {
+	repository: *"" | string
+	tag: 				*"" | string
+	pullPolicy: *corev1.#PullIfNotPresent | corev1.#PullPolicy
 }
 
 _#ControllerConfig: {
-	enabled:       bool | *true
-	annotations:   ({[string]: string}) | *null
-	labels:        ({[string]: string}) | *null
-	restartPolicy: v1.#RestartPolicy | *v1.#RestartPolicyAlways
+	enabled:       *true | bool
+	annotations:   *null | ({[string]: string})
+	labels:        *null | ({[string]: string})
+	restartPolicy: *corev1.#RestartPolicyAlways | corev1.#RestartPolicy
 }
 
 #DaemonSetConfig: {
@@ -32,7 +39,7 @@ _#ControllerConfig: {
 	// https://github.com/cue-lang/cue/issues/2421
 	daemonset: true
 
-	strategy: appsv1.#DaemonSetUpdateStrategy | *appsv1.#RollingUpdateDaemonSetStrategyType
+	strategy: *appsv1.#RollingUpdateDaemonSetStrategyType | appsv1.#DaemonSetUpdateStrategy
 }
 
 #DeploymentConfig: {
@@ -41,10 +48,10 @@ _#ControllerConfig: {
 	// https://github.com/cue-lang/cue/issues/2421
 	deployment: true
 
-	replicas: int | *1
-	strategy: appsv1.#DeploymentStrategy | *appsv1.#RollingUpdateDeploymentStrategyType
+	replicas: *1 | int
+	strategy: *appsv1.#RollingUpdateDeploymentStrategyType | appsv1.#DeploymentStrategy
 	if strategy == appsv1.#RollingUpdateDeploymentStrategyType {
-		rollingUpdate: appsv1.#RollingUpdateDeployment | *null
+		rollingUpdate: *null | appsv1.#RollingUpdateDeployment
 	}
 }
 
@@ -54,41 +61,27 @@ _#ControllerConfig: {
 	// https://github.com/cue-lang/cue/issues/2421
 	statefulset: true
 
-	replicas: int | *1
-	strategy: appsv1.#StatefulSetUpdateStrategy | *appsv1.#RollingUpdateStatefulSetStrategyType
+	replicas: *1 | int
+	strategy: *appsv1.#RollingUpdateStatefulSetStrategyType | appsv1.#StatefulSetUpdateStrategy
 	if strategy == appsv1.#RollingUpdateDeploymentStrategyType {
-		rollingUpdate: appsv1.#RollingUpdateStatefulSetStrategy | *null
+		rollingUpdate: *null | appsv1.#RollingUpdateStatefulSetStrategy
 	}
 }
 
 #IngressConfig: {
-	enabled:          bool | *true
-	ingressClassName: string | *null
+	enabled:          *true | bool
+	ingressClassName: *null | string
 }
 
 #ConfigMapConfig: {
-	immutable: bool | *false
-	data:      ({[string]: string}) | *null
+	immutable: *false | bool
+	data:      *null | ({[string]: string})
 }
 
 #ServiceConfig: {
-	// TODO: How does this get overridden
-	ports: [...v1.#ServicePort] | *null
-	// selector: [...]
-	// clusterIP: string
-	// clusterIPs: [...]
-	type: v1.#ServiceType | *v1.#ServiceTypeClusterIP
-	// externalIPs: [...]
-	sessionAffinity: v1.#ServiceAffinity | *v1.#ServiceAffinityNone
-	// loadBalancerIP: [...]
-	// loadBalancerSourceRanges: [...]
-	// externalName: [...]
-	// externalTrafficPolicy: [...]
-	// ipFamilies: [...]
-	// ipFamilyPolicy: [...]
-	// allocateLoadBalancerNodePorts: [...]
-	// loadBalancerClass: [...]
-	// internalTrafficPolicy:[...]
+	ports: *null | [...corev1.#ServicePort]
+	type: *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
+	sessionAffinity: *corev1.#ServiceAffinityNone | corev1.#ServiceAffinity
 }
 
 #MetadataConfig: metav1.#ObjectMeta & {
@@ -96,29 +89,4 @@ _#ControllerConfig: {
 	namespace: *"default" | string & strings.MaxRunes(63)
 }
 
-#PodConfig: {
-	imagePullSecrets?: [...]
-	serviceAccountName?:            *"default" | string
-	automountServiceAccountToken?:  *true | bool
-	podSecurityContext?:            v1.#PodSecurityContext
-	priorityClassName?:             string
-	runtimeClassName?:              string
-	schedulerName?:                 string
-	hostIPC?:                       *false | bool
-	hostNetwork?:                   *false | bool
-	hostPID?:                       *false | bool
-	hostname?:                      string
-	dnsPolicy?:                     string | *v1.#DNSClusterFirst
-	dnsConfig?:                     v1.#PodDNSConfig
-	enableServiceLinks?:            *true | bool
-	terminationGracePeriodSeconds?: int & >0
-	initContainers?: [...]
-	containers?: [...]
-	volumes?: [...]
-	hostAliases?: [...]
-	nodeSelector?: {...}
-	affinity?: v1.#Affinity
-	topologySpreadConstraints?: [...]
-	tolerations:    [...v1.#Toleration] | *null
-	restartPolicy?: *"Always" | v1.#RestartPolicy
-}
+#PodConfig: corev1.#PodSpec

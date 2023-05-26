@@ -1,10 +1,10 @@
 package templates
 
-import "k8s.io/api/core/v1"
+import corev1 "k8s.io/api/core/v1"
 
 #ConfigMapTemplate: {
 	config:   #Config
-	template: v1.#ConfigMap & {
+	template: corev1.#ConfigMap & {
 		apiVersion: "v1"
 		kind:       "ConfigMap"
 		metadata:   config.metadata

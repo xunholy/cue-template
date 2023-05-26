@@ -1,10 +1,10 @@
 package templates
 
-import "k8s.io/api/core/v1"
+import corev1 "k8s.io/api/core/v1"
 
 #ServiceTemplate: {
 	config:   #Config
-	template: v1.#Service & {
+	template: corev1.#Service & {
 		apiVersion: "v1"
 		kind:       "Service"
 		metadata:   config.metadata
