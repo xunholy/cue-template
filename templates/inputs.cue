@@ -9,15 +9,24 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+#ControllerKind: #DaemonSetController | #DeploymentController | #StatefulSetController
+
+#DaemonSetController:   "daemonset"
+#DeploymentController:  "deployment"
+#StatefulSetController: "statefulset"
+
 // Config defines the schema and defaults for the Instance values.
 #Config: {
-	controller: *#DeploymentConfig | #DaemonSetConfig | #StatefulSetConfig
-	metadata:   #MetadataConfig
-	pod:        #PodConfig
-	configmap:  #ConfigMapConfig
-	service:    #ServiceConfig
-	ingress:    #IngressConfig
-	image:      #ImageConfig
+	controller: {
+		#DeploymentConfig | #DaemonSetConfig | #StatefulSetConfig
+		kind: *#DeploymentController | #ControllerKind
+	}
+	metadata:     #MetadataConfig
+	pod:          #PodConfig
+	configmap:    #ConfigMapConfig
+	service:      #ServiceConfig
+	ingress:      #IngressConfig
+	image:        #ImageConfig
 	nodeSelector: ({[string]: string})
 }
 
@@ -36,14 +45,14 @@ _#ControllerConfig: {
 
 #DaemonSetConfig: {
 	_#ControllerConfig
-	kind: "daemonset"
+	kind: #DaemonSetController
 
 	strategy: *appsv1.#RollingUpdateDaemonSetStrategyType | appsv1.#DaemonSetUpdateStrategy
 }
 
 #DeploymentConfig: {
 	_#ControllerConfig
-	kind: "deployment"
+	kind: #DeploymentController
 
 	replicas: *1 | int
 	strategy: *appsv1.#RollingUpdateDeploymentStrategyType | appsv1.#DeploymentStrategy
@@ -54,7 +63,7 @@ _#ControllerConfig: {
 
 #StatefulSetConfig: {
 	_#ControllerConfig
-	kind: "statefulset"
+	kind: #StatefulSetController
 
 	replicas: *1 | int
 	strategy: *appsv1.#RollingUpdateStatefulSetStrategyType | appsv1.#StatefulSetUpdateStrategy
@@ -65,7 +74,7 @@ _#ControllerConfig: {
 
 #IngressConfig: {
 	enabled:          *true | bool
-	annotations:   *null | ({[string]: string})
+	annotations:      *null | ({[string]: string})
 	ingressClassName: *null | string
 }
 
@@ -78,7 +87,7 @@ _#ControllerConfig: {
 	ports:           *null | [...corev1.#ServicePort]
 	type:            *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
 	sessionAffinity: *corev1.#ServiceAffinityNone | corev1.#ServiceAffinity
-	externalIPs:		*null | [...string]
+	externalIPs:     *null | [...string]
 }
 
 #MetadataConfig: metav1.#ObjectMeta & {

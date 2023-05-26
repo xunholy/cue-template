@@ -11,3 +11,23 @@ This repository also includes documentation and examples to get you started with
 [CUE](https://cuelang.org/) combines the benefits of schema and value-level validation, and allows you to define the structure of your data and its constraints in one place. It provides a unified way to handle configuration, ensuring less redundancy, and a more robust, error-free setup. With CUE, you can focus more on the logic of your application, rather than getting stuck in the complexities of configuration.
 
 For more details on the core issues addressed by CUE, and how it can benefit your configuration management process, follow this link: [Core issues addressed by CUE](https://cuelang.org/docs/usecases/configuration/#core-issues-addressed-by-cue)
+
+## Usage
+
+### Format
+
+```sh
+❯ cue fmt -s ./...
+```
+
+### Build
+
+```sh
+❯ go run github.com/stefanprodan/timoni/cmd/timoni@latest build some-release-name .
+```
+
+### Lint
+
+```sh
+❯ go run github.com/stefanprodan/timoni/cmd/timoni@latest mod lint .
+```

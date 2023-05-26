@@ -13,8 +13,8 @@ import corev1 "k8s.io/api/core/v1"
 			// selector: matchLabels: config.metadata.labels
 			// clusterIP: config.service.clusterIP
 			// clusterIPs: config.service.clusterIPs
-			type: config.service.type
-			externalIPs: config.service.externalIPs
+			type:            config.service.type
+			externalIPs:     config.service.externalIPs
 			sessionAffinity: config.service.sessionAffinity
 			// loadBalancerIP: config.service
 			// loadBalancerSourceRanges: config.service
