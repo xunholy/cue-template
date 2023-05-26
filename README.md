@@ -23,11 +23,11 @@ For more details on the core issues addressed by CUE, and how it can benefit you
 ### Build
 
 ```sh
-❯ go run github.com/stefanprodan/timoni/cmd/timoni@latest build some-release-name .
+❯ go run github.com/stefanprodan/timoni/cmd/timoni build some-release-name .
 ```
 
 ### Lint
 
 ```sh
-❯ go run github.com/stefanprodan/timoni/cmd/timoni@latest mod lint .
+❯ go run github.com/stefanprodan/timoni/cmd/timoni mod lint .
 ```
