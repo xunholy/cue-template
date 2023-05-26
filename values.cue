@@ -1,16 +1,15 @@
 package main
 
-import "github.com/xunholy/cue-template/templates"
-
 values: {
-	controller: templates.#StatefulSetConfig
 	controller: {
-		annotations: {"reloader.stakater.com/auto": "true"}
+		kind: "statefulset"
+		annotations: "reloader.stakater.com/auto": "true"
 	}
 	image: {
 		repository: "ghcr.io/onedr0p/jellyfin"
 		tag:        "10.8.10@sha256:1ef614db6a4c589777eb48bc9004d573b9c09f0d6d573a509041c6060f3a956b"
 	}
+
 	// env: {
 	//     TZ: "America/New_York"
 	// }

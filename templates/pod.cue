@@ -10,9 +10,9 @@ import corev1 "k8s.io/api/core/v1"
 			// annotations: config.metadata.annotations
 		}
 		spec: config.pod & {containers: [{
-				name: "\(config.metadata.name)"
-				image: "\(config.image.repository):\(config.image.tag)"
-			}]
+			name:  "\(config.metadata.name)"
+			image: "\(config.image.repository):\(config.image.tag)"
+		}]
 		}
 	}
 }
