@@ -18,6 +18,7 @@ import (
 	service:    #ServiceConfig
 	ingress:    #IngressConfig
 	image:      #ImageConfig
+	nodeSelector: ({[string]: string})
 }
 
 #ImageConfig: {
@@ -64,6 +65,7 @@ _#ControllerConfig: {
 
 #IngressConfig: {
 	enabled:          *true | bool
+	annotations:   *null | ({[string]: string})
 	ingressClassName: *null | string
 }
 
@@ -76,6 +78,7 @@ _#ControllerConfig: {
 	ports:           *null | [...corev1.#ServicePort]
 	type:            *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
 	sessionAffinity: *corev1.#ServiceAffinityNone | corev1.#ServiceAffinity
+	externalIPs:		*null | [...string]
 }
 
 #MetadataConfig: metav1.#ObjectMeta & {

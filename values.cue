@@ -18,28 +18,28 @@ values: {
 	// //         secretRef: name: "jellyfin-secret"
 	// //     ]
 	// // }
-	// ingress: {
-	//     ingressClassName: "nginx"
-	//     annotations: "hajimari.io/icon": "simple-icons:jellyfin"
-	// }
-	// service: {
-	//     externalIPs: [
-	//         "192.168.69.100"
-	//     ]
-	//     ports: [
-	//         {
-	//             port: 8081
-	//             targetPort: 8081
-	//             name: "main"
-	//             protocol: "TCP"
-	//         }
-	//     ]
-	//     type: "LoadBalancer"
-	// }
-	// nodeSelector: {
-	//     "node-role.kubernetes.io/worker": "true"
-	//     "intel.feature.node.kubernetes.io/gpu": "true"
-	// }
+	ingress: {
+		ingressClassName: "nginx"
+		annotations: "hajimari.io/icon": "simple-icons:jellyfin"
+	}
+	service: {
+		externalIPs: [
+			"192.168.69.100",
+		]
+		ports: [
+			{
+				port:       8081
+				targetPort: 8081
+				name:       "main"
+				protocol:   "TCP"
+			},
+		]
+		type: "LoadBalancer"
+	}
+	nodeSelector: {
+		"node-role.kubernetes.io/worker":       "true"
+		"intel.feature.node.kubernetes.io/gpu": "true"
+	}
 	// volumeClaimTemplates: {
 	//     [
 	//         {

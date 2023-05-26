@@ -9,7 +9,8 @@ import networkingv1 "k8s.io/api/networking/v1"
 			apiVersion: "v1"
 			kind:       "Ingress"
 			metadata:   config.metadata
-			spec: {}
+			metadata: annotations: config.ingress.annotations
+			spec: ingressClassName: config.ingress.ingressClassName
 		}
 	}
 }

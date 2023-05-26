@@ -14,7 +14,7 @@ import corev1 "k8s.io/api/core/v1"
 			// clusterIP: config.service.clusterIP
 			// clusterIPs: config.service.clusterIPs
 			type: config.service.type
-			// externalIPs: config.service.externalIPs
+			externalIPs: config.service.externalIPs
 			sessionAffinity: config.service.sessionAffinity
 			// loadBalancerIP: config.service
 			// loadBalancerSourceRanges: config.service
