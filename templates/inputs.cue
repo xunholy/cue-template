@@ -11,7 +11,7 @@ import (
 
 // Config defines the schema and defaults for the Instance values.
 #Config: {
-	controller: *{kind: "deployment"} | #DaemonSetConfig | #DeploymentConfig | #StatefulSetConfig
+	controller: *#DeploymentConfig | #DaemonSetConfig | #StatefulSetConfig
 	metadata:   #MetadataConfig
 	pod:        #PodConfig
 	configmap:  #ConfigMapConfig
