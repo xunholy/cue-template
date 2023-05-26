@@ -11,18 +11,18 @@ import (
 
 // Config defines the schema and defaults for the Instance values.
 #Config: {
-	controller: #DaemonSetConfig | *#DeploymentConfig | #StatefulSetConfig
+	controller: *{kind: "deployment"} | #DaemonSetConfig | #DeploymentConfig | #StatefulSetConfig
 	metadata:   #MetadataConfig
 	pod:        #PodConfig
 	configmap:  #ConfigMapConfig
 	service:    #ServiceConfig
 	ingress:    #IngressConfig
-	image: 			#ImageConfig
+	image:      #ImageConfig
 }
 
 #ImageConfig: {
 	repository: *"" | string
-	tag: 				*"" | string
+	tag:        *"" | string
 	pullPolicy: *corev1.#PullIfNotPresent | corev1.#PullPolicy
 }
 
@@ -35,18 +35,14 @@ _#ControllerConfig: {
 
 #DaemonSetConfig: {
 	_#ControllerConfig
-
-	// https://github.com/cue-lang/cue/issues/2421
-	daemonset: true
+	kind: "daemonset"
 
 	strategy: *appsv1.#RollingUpdateDaemonSetStrategyType | appsv1.#DaemonSetUpdateStrategy
 }
 
 #DeploymentConfig: {
 	_#ControllerConfig
-
-	// https://github.com/cue-lang/cue/issues/2421
-	deployment: true
+	kind: "deployment"
 
 	replicas: *1 | int
 	strategy: *appsv1.#RollingUpdateDeploymentStrategyType | appsv1.#DeploymentStrategy
@@ -57,9 +53,7 @@ _#ControllerConfig: {
 
 #StatefulSetConfig: {
 	_#ControllerConfig
-
-	// https://github.com/cue-lang/cue/issues/2421
-	statefulset: true
+	kind: "statefulset"
 
 	replicas: *1 | int
 	strategy: *appsv1.#RollingUpdateStatefulSetStrategyType | appsv1.#StatefulSetUpdateStrategy
@@ -79,8 +73,8 @@ _#ControllerConfig: {
 }
 
 #ServiceConfig: {
-	ports: *null | [...corev1.#ServicePort]
-	type: *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
+	ports:           *null | [...corev1.#ServicePort]
+	type:            *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
 	sessionAffinity: *corev1.#ServiceAffinityNone | corev1.#ServiceAffinity
 }
 
