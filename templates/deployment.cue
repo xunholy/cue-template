@@ -17,7 +17,7 @@ import appsv1 "k8s.io/api/apps/v1"
 					type:          config.controller.strategy
 					rollingUpdate: config.controller.rollingUpdate
 				}
-				selector: matchLabels: config.controller.labels
+				selector: matchLabels: config.metadataSpec.selectorLabels
 
 				let _config = config
 

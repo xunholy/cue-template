@@ -12,7 +12,7 @@ import appsv1 "k8s.io/api/apps/v1"
 			metadata: annotations: config.controller.annotations
 			metadata: labels:      config.controller.labels
 			spec: {
-				selector: matchLabels: config.controller.labels
+				selector: matchLabels: config.metadataSpec.selectorLabels
 
 				let _config = config
 

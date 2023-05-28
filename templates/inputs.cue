@@ -20,13 +20,16 @@ import (
 	controller: {
 		#DeploymentConfig | #DaemonSetConfig | #StatefulSetConfig
 		kind: *#DeploymentController | #ControllerKind
+
 	}
-	metadata:     #MetadataConfig
+	metadata: 		#MetadataConfig
+	metadataSpec: #MetadataSpecConfig
 	pod:          #PodConfig
 	configmap:    #ConfigMapConfig
 	service:      #ServiceConfig
 	ingress:      #IngressConfig
 	image:        #ImageConfig
+
 	nodeSelector: ({[string]: string})
 }
 
@@ -96,3 +99,11 @@ _#ControllerConfig: {
 }
 
 #PodConfig: corev1.#PodSpec
+
+// TODO:
+#MetadataSpecConfig: {
+	selectorLabels: *null | ({[string]: string})
+	podAnnotations: *null | ({[string]: string})
+	globalLabels: *null | ({[string]: string})
+	globalAnnotations: *null | ({[string]: string})
+}
