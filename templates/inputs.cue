@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	appsv1 "k8s.io/api/apps/v1"
-	corev1 "k8s.io/api/core/v1"
+	"k8s.io/api/core/v1"
 	// networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -35,13 +35,13 @@ import (
 #ImageConfig: {
 	repository: *"" | string
 	tag:        *"" | string
-	pullPolicy: *corev1.#PullIfNotPresent | corev1.#PullPolicy
+	pullPolicy: *v1.#PullIfNotPresent | v1.#PullPolicy
 }
 
 _#ControllerConfig: {
 	_#Common
 	enabled:       *true | bool
-	restartPolicy: *corev1.#RestartPolicyAlways | corev1.#RestartPolicy
+	restartPolicy: *v1.#RestartPolicyAlways | v1.#RestartPolicy
 }
 
 #DaemonSetConfig: {
@@ -87,9 +87,9 @@ _#ControllerConfig: {
 
 #ServiceConfig: [#Name=string]: {
 	_#Common
-	ports:           *null | [...corev1.#ServicePort]
-	type:            *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
-	sessionAffinity: *corev1.#ServiceAffinityNone | corev1.#ServiceAffinity
+	ports:           *null | [...v1.#ServicePort]
+	type:            *v1.#ServiceTypeClusterIP | v1.#ServiceType
+	sessionAffinity: *v1.#ServiceAffinityNone | v1.#ServiceAffinity
 	externalIPs:     *null | [...string]
 }
 
@@ -98,7 +98,7 @@ _#ControllerConfig: {
 	namespace: *"default" | string & strings.MaxRunes(63)
 }
 
-#PodConfig: corev1.#PodSpec
+#PodConfig: v1.#PodSpec
 
 #GlobalConfig: _#Common
 
