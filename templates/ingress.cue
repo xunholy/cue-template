@@ -4,11 +4,11 @@ import networkingv1 "k8s.io/api/networking/v1"
 
 #IngressListTemplate: {
 	config: #Config
-	template: [...networkingv1.#Ingress & {
+	items: [...networkingv1.#Ingress & {
 		apiVersion: "v1"
 		kind:       "Ingress"
 	}]
-	template: [ for ingressName, ingressConfig in config.ingress if ingressConfig.enabled {
+	items: [ for ingressName, ingressConfig in config.ingress if ingressConfig.enabled {
 		metadata: {
 			config.metadata
 			annotations: ingressConfig.annotations
