@@ -21,12 +21,12 @@ values: {
 	ingress: main: {
 		ingressClassName: "nginx"
 		annotations: "hajimari.io/icon": "simple-icons:jellyfin"
-		enabled: true
+		enabled:    true
 		secretName: "example"
 		hosts: [{
 			host: "foo.bar.com"
 			paths: [{
-				path: "/"
+				path:     "/"
 				pathType: "Prefix"
 			}]
 		}]
