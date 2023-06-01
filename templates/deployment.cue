@@ -2,15 +2,21 @@ package templates
 
 import appsv1 "k8s.io/api/apps/v1"
 
-#DeploymentTemplate: {
+#DeploymentListTemplate: {
 	config: #Config
 	if (config.controller & #DeploymentConfig) != _|_ && config.controller.enabled {
-		template: appsv1.#Deployment & {
+		template: [...appsv1.#Deployment & {
 			apiVersion: "apps/v1"
 			kind:       "Deployment"
-			metadata:   config.metadata
-			metadata: annotations: config.controller.annotations
-			metadata: labels:      config.controller.labels
+		}]
+		template: {
+			metadata: {
+				config.metadata
+				labels:      config.controller.labels
+				labels:      config.global.labels
+				annotations: config.controller.annotations
+				annotations: config.global.annotations
+			}
 			spec: {
 				replicas: config.controller.replicas
 				strategy: {

@@ -5,7 +5,7 @@ import "strings"
 #Instance: {
 	config: #Config
 
-	let _templates = [#ConfigMapTemplate, #DaemonSetTemplate, #DeploymentTemplate, #IngressTemplate, #ServiceTemplate, #StatefulSetTemplate]
+	let _templates = [#ConfigMapListTemplate, #DaemonSetListTemplate, #DeploymentListTemplate, #IngressListTemplate, #ServiceListTemplate, #StatefulSetListTemplate]
 
 	objects: {
 		for template in _templates {
@@ -15,9 +15,11 @@ import "strings"
 			let object = template & {config: _config}
 
 			if object.template != _|_ {
-				let name = object.template.metadata.name
-				let kind = strings.ToLower(object.template.kind)
-				"\(name)-\(kind)": object.template
+				for template in object.template {
+					let name = template.metadata.name
+					let kind = strings.ToLower(template.kind)
+					"\(name)-\(kind)": template
+				}
 			}
 		}
 	}

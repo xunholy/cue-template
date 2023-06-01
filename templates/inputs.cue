@@ -20,15 +20,14 @@ import (
 	controller: {
 		#DeploymentConfig | #DaemonSetConfig | #StatefulSetConfig
 		kind: *#DeploymentController | #ControllerKind
-
 	}
-	metadata: 		#MetadataConfig
-	metadataSpec: #MetadataSpecConfig
-	pod:          #PodConfig
-	configmap:    #ConfigMapConfig
-	service:      #ServiceConfig
-	ingress:      #IngressConfig
-	image:        #ImageConfig
+	global:    #GlobalConfig
+	metadata:  #MetadataConfig
+	pod:       #PodConfig
+	configmap: #ConfigMapConfig
+	service:   #ServiceConfig
+	ingress: [string]: #IngressConfig
+	image: #ImageConfig
 
 	nodeSelector: ({[string]: string})
 }
@@ -40,9 +39,8 @@ import (
 }
 
 _#ControllerConfig: {
+	_#Common
 	enabled:       *true | bool
-	annotations:   *null | ({[string]: string})
-	labels:        *null | ({[string]: string})
 	restartPolicy: *corev1.#RestartPolicyAlways | corev1.#RestartPolicy
 }
 
@@ -76,17 +74,19 @@ _#ControllerConfig: {
 }
 
 #IngressConfig: {
-	enabled:          *true | bool
-	annotations:      *null | ({[string]: string})
+	enabled: *true | bool
+	_#Common
 	ingressClassName: *null | string
 }
 
 #ConfigMapConfig: {
+	_#Common
 	immutable: *false | bool
 	data:      *null | ({[string]: string})
 }
 
-#ServiceConfig: {
+#ServiceConfig: [#Name=string]: {
+	_#Common
 	ports:           *null | [...corev1.#ServicePort]
 	type:            *corev1.#ServiceTypeClusterIP | corev1.#ServiceType
 	sessionAffinity: *corev1.#ServiceAffinityNone | corev1.#ServiceAffinity
@@ -100,10 +100,9 @@ _#ControllerConfig: {
 
 #PodConfig: corev1.#PodSpec
 
-// TODO:
-#MetadataSpecConfig: {
-	selectorLabels: *null | ({[string]: string})
-	podAnnotations: *null | ({[string]: string})
-	globalLabels: *null | ({[string]: string})
-	globalAnnotations: *null | ({[string]: string})
+#GlobalConfig: _#Common
+
+_#Common: {
+	labels:      *null | ({[string]: string})
+	annotations: *null | ({[string]: string})
 }

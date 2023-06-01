@@ -2,19 +2,24 @@ package templates
 
 import appsv1 "k8s.io/api/apps/v1"
 
-#StatefulSetTemplate: {
+#StatefulSetListTemplate: {
 	config: #Config
 	let _controller = config.controller
 	if (_controller & #StatefulSetConfig) != _|_ && config.controller.enabled {
-		template: appsv1.#StatefulSet & {
+		template: [...appsv1.#StatefulSet & {
 			apiVersion: "apps/v1"
 			kind:       "StatefulSet"
-			metadata:   config.metadata
-			metadata: annotations: config.controller.annotations
-			metadata: labels:      config.controller.labels
+		}]
+		template: [{
+			metadata: {
+				config.metadata
+				labels:      config.controller.labels
+				labels:      config.global.labels
+				annotations: config.controller.annotations
+				annotations: config.global.annotations
+			}
 			spec: {
 				replicas: config.controller.replicas
-				selector: matchLabels: config.metadataSpec.selectorLabels
 
 				let _config = config
 
@@ -24,6 +29,6 @@ import appsv1 "k8s.io/api/apps/v1"
 				serviceName: config.metadata.name
 				updateStrategy: type: config.controller.strategy
 			}
-		}
+		}]
 	}
 }

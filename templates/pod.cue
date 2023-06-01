@@ -9,7 +9,7 @@ import corev1 "k8s.io/api/core/v1"
 		// metadata: annotations: config.metadata.annotations
 		spec: config.pod & {
 			containers: [{
-				name:  "\(config.metadata.name)"
+				name:  config.metadata.name
 				image: "\(config.image.repository):\(config.image.tag)"
 			}]
 			nodeSelector: config.nodeSelector

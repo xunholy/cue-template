@@ -18,11 +18,12 @@ values: {
 	// //         secretRef: name: "jellyfin-secret"
 	// //     ]
 	// // }
-	ingress: {
+	ingress: main: {
 		ingressClassName: "nginx"
 		annotations: "hajimari.io/icon": "simple-icons:jellyfin"
 	}
-	service: {
+	global: annotations: "hajimari.io/icon2": "simple-icons:jellyfin2"
+	service: main: {
 		externalIPs: [
 			"192.168.69.100",
 		]

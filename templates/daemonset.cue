@@ -2,15 +2,21 @@ package templates
 
 import appsv1 "k8s.io/api/apps/v1"
 
-#DaemonSetTemplate: {
+#DaemonSetListTemplate: {
 	config: #Config
 	if (config.controller & #DaemonSetConfig) != _|_ && config.controller.enabled {
-		template: appsv1.#DaemonSet & {
+		template: [...appsv1.#DaemonSet & {
 			apiVersion: "apps/v1"
 			kind:       "DaemonSet"
-			metadata:   config.metadata
-			metadata: annotations: config.controller.annotations
-			metadata: labels:      config.controller.labels
+		}]
+		template: {
+			metadata: {
+				config.metadata
+				labels:      config.controller.labels
+				labels:      config.global.labels
+				annotations: config.controller.annotations
+				annotations: config.global.annotations
+			}
 			spec: {
 				selector: matchLabels: config.metadataSpec.selectorLabels
 
