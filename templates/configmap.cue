@@ -11,9 +11,9 @@ import corev1 "k8s.io/api/core/v1"
 	template: [{
 		metadata: {
 			config.metadata
-			labels:      config.controller.labels
+			labels:      config.configmap.labels
 			labels:      config.global.labels
-			annotations: config.controller.annotations
+			annotations: config.configmap.annotations
 			annotations: config.global.annotations
 		}
 		immutable: config.configmap.immutable

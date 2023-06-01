@@ -19,8 +19,16 @@ values: {
 	// //     ]
 	// // }
 	ingress: main: {
+		enabled: true
 		ingressClassName: "nginx"
 		annotations: "hajimari.io/icon": "simple-icons:jellyfin"
+		hosts: [{
+			host: "domo.bjw-s.dev"
+			paths: [{
+				path: "/"
+				pathType: "Prefix"
+			}]
+		}]
 	}
 	global: annotations: "hajimari.io/icon2": "simple-icons:jellyfin2"
 	service: main: {

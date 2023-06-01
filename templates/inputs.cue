@@ -76,6 +76,7 @@ _#ControllerConfig: {
 #IngressConfig: {
 	enabled: *true | bool
 	_#Common
+	hosts: []
 	ingressClassName: *null | string
 }
 
