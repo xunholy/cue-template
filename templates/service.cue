@@ -4,11 +4,11 @@ import corev1 "k8s.io/api/core/v1"
 
 #ServiceListTemplate: {
 	config: #Config
-	template: [...corev1.#Service & {
+	items: [...corev1.#Service & {
 		apiVersion: "v1"
 		kind:       "Service"
 	}]
-	template: [ for serviceName, serviceConfig in config.service {
+	items: [ for serviceName, serviceConfig in config.service {
 		metadata: {
 			config.metadata
 			labels: config.global.labels

@@ -4,11 +4,11 @@ import corev1 "k8s.io/api/core/v1"
 
 #ConfigMapListTemplate: {
 	config: #Config
-	template: [...corev1.#ConfigMap & {
+	items: [...corev1.#ConfigMap & {
 		apiVersion: "v1"
 		kind:       "ConfigMap"
 	}]
-	template: [{
+	items: [{
 		metadata: {
 			config.metadata
 			labels:      config.controller.labels
