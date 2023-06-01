@@ -1,10 +1,10 @@
 package templates
 
-import corev1 "k8s.io/api/core/v1"
+import "k8s.io/api/core/v1"
 
 #ServiceListTemplate: {
 	config: #Config
-	items: [...corev1.#Service & {
+	items: [...v1.#Service & {
 		apiVersion: "v1"
 		kind:       "Service"
 	}]

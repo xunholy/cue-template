@@ -1,10 +1,10 @@
 package templates
 
-import corev1 "k8s.io/api/core/v1"
+import "k8s.io/api/core/v1"
 
 #ConfigMapListTemplate: {
 	config: #Config
-	items: [...corev1.#ConfigMap & {
+	items: [...v1.#ConfigMap & {
 		apiVersion: "v1"
 		kind:       "ConfigMap"
 	}]
