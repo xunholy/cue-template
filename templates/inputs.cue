@@ -77,7 +77,17 @@ _#ControllerConfig: {
 	enabled: *true | bool
 	_#Common
 	ingressClassName: *null | string
+	hosts:            #HostsConfig
+	secretName:       *null | string
 }
+
+#HostsConfig: [{
+	host: *null | string
+	paths: [{
+		path:     string
+		pathType: "Prefix"
+	}]
+}]
 
 #ConfigMapConfig: {
 	_#Common
